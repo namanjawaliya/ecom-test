@@ -11,6 +11,8 @@ import PrimaryTextarea from "@/components/utils/PrimaryTextarea";
 import PrimarySelect from "@/components/utils/PrimarySelect";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/lib/types/Product";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import addProduct from "@/lib/api/addProduct";
 
 type Props = {
   isOpen: boolean;
@@ -19,7 +21,7 @@ type Props = {
   initialData?: Product;
 };
 
-const categories = ["Electronics", "Books", "Clothing", "Home & Kitchen"]; // Example categories
+const categories = ["Electronics", "Books", "Clothing", "Home & Kitchen"];
 
 const AddEditProductModal = ({
   isOpen,
@@ -33,7 +35,6 @@ const AddEditProductModal = ({
     category: "",
     price: 0,
     discount: 0,
-    sellerId: "saf",
   });
 
   useEffect(() => {
@@ -49,6 +50,17 @@ const AddEditProductModal = ({
     }));
   };
 
+  const mutation: UseMutationResult<Product, Error, Product> = useMutation({
+    mutationFn: addProduct,
+    onSuccess: (data) => {
+      console.log("Product added successfully:", data);
+      setIsOpen(false);
+    },
+    onError: (error) => {
+      console.error("Failed to add product:", error);
+    },
+  });
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -58,7 +70,9 @@ const AddEditProductModal = ({
       discount: Number(formData.discount),
     };
 
+    mutation.mutate(productData); // Trigger the mutation to add the product
     console.log("Form data submitted:", productData);
+
     // Handle submission logic, such as calling an API
   };
 
