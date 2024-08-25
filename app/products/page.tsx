@@ -29,7 +29,7 @@ const ProductsPage = () => {
       </div>
       <div className="flex gap-10 flex-wrap justify-around">
         {data?.map(({ ...productConfig }: Product) => (
-          <ProductCard {...productConfig} />
+          <ProductCard key={productConfig.id} {...productConfig} />
         ))}
       </div>
       <AddEditProductModal
